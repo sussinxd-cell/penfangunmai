@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>💌 สำหรับน้องบัวขวัญ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff8fa3;
+            --soft-pink: #fff0f3;
+            --dark-pink: #ff4d6d;
+            --envelope-main: #ffc2d1;
+            --wax-red: #d91e36; 
+            --gold-text: #fff0f3; 
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--soft-pink);
+            font-family: 'Mali', cursive;
+            display: grid; place-items: center;
+            overflow: hidden; touch-action: manipulation;
+        }
+
+        .main-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+
+        /* --- Envelope Style --- */
+        .envelope-wrapper { 
+            position: absolute; z-index: 10; cursor: pointer; text-align: center; 
+            transition: all 0.5s ease; 
+        }
+        
+        .envelope-wrapper:hover { transform: translateY(-5px); }
+
+        .envelope {
+            position: relative; width: 300px; height: 200px;
+            background-color: var(--envelope-main); border-radius: 0 0 15px 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .envelope::before {
+            content: ""; position: absolute; top: 0; left: 0; z-index: 4;
+            border-top: 120px solid var(--dark-pink);
+            border-left: 150px solid transparent; border-right: 150px solid transparent;
+            transform-origin: top; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+        }
+
+        .envelope::after {
+            content: ""; position: absolute; bottom: 0; left: 0; z-index: 3;
+            border-bottom: 110px solid var(--primary-pink);
+            border-left: 150px solid var(--envelope-main);
+            border-right: 150px solid var(--envelope-main);
+            border-radius: 0 0 15px 15px;
+        }
+
+        /* --- Wax Seal LOVE --- */
+        .heart-seal {
+            position: absolute; top: 50%; left: 50%; width: 50px; height: 50px;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            animation: heartBeat 1.5s infinite;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .heart-seal::before {
+            content: "";
+            position: absolute;
+            width: 100%; height: 100%;
+            background-color: var(--wax-red);
+            clip-path: path('M25,45 C25,45 5,30 5,17.5 C5,10 12,5 20,5 C23,5 25,8 25,8 C25,8 27,5 30,5 C38,5 45,10 45,17.5 C45,30 25,45 25,45 Z');
+            box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3), inset -2px -2px 4px rgba(0, 0, 0, 0.4);
+            filter: blur(0.5px);
+        }
+
+        .heart-seal::after {
+            content: "LOVE";
+            position: relative; z-index: 6;
+            font-family: sans-serif; font-weight: bold; font-size: 10px;
+            color: var(--gold-text); text-transform: uppercase;
+            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .open .envelope::before { transform: rotateX(180deg); z-index: 0; }
+        .open .heart-seal { opacity: 0; pointer-events: none; }
+
+        /* --- Floating Pics --- */
+        .floating-pic {
+            position: fixed; pointer-events: none; z-index: 1;
+            object-fit: contain;
+            animation: driftUp var(--speed) linear forwards, sway var(--sway-speed) ease-in-out infinite alternate;
+            bottom: -150px; opacity: 0;
+        }
+
+        @keyframes driftUp {
+            0% { bottom: -150px; opacity: 0; }
+            15% { opacity: var(--max-op); }
+            85% { opacity: var(--max-op); }
+            100% { bottom: 115vh; opacity: 0; }
+        }
+
+        @keyframes sway {
+            0% { transform: translateX(var(--sway-left)) rotate(var(--rot-left)); }
+            100% { transform: translateX(var(--sway-right)) rotate(var(--rot-right)); }
+        }
+
+        /* --- Container Styles --- */
+        .container {
+            text-align: center; background: white; padding: 2.5rem;
+            border-radius: 30px; box-shadow: 0 15px 45px rgba(255, 143, 163, 0.3);
+            max-width: 320px; width: 85%; border: 4px dashed var(--primary-pink);
+            position: absolute; opacity: 0; transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            visibility: hidden; z-index: 20;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .container.active { opacity: 1; transform: scale(1); visibility: visible; }
+        .gif-container { width: 100%; height: 180px; margin-bottom: 1.5rem; display: flex; justify-content: center; }
+        .gif-container img { max-height: 100%; border-radius: 15px; }
+
+        .btn-group {
+            display: flex; justify-content: center; align-items: center; 
+            gap: 15px; min-height: 150px; flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px; font-size: 1.1rem; border: none; border-radius: 50px;
+            cursor: pointer; font-family: 'Mali', cursive; transition: all 0.3s ease;
+            background: var(--primary-pink); color: white;
+            box-shadow: 0 4px 15px rgba(255, 143, 163, 0.4);
+        }
+        .btn-secondary { background: #eee; color: #888; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://files.catbox.moe/2kyncs.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="main-wrapper">
+        <div class="envelope-wrapper" id="envelopeSection">
+            <div class="envelope">
+                <div class="heart-seal"></div>
+            </div>
+            <p style="color: var(--dark-pink); margin-top: 30px; font-weight: bold;">มีจดหมายมาส่ง~~~~~ 💌</p>
+        </div>
+
+        <div class="container" id="letterSection">
+            <div class="gif-container">
+                <img src="https://i.ibb.co/vWkdvF8/aad36fac-78fd-4e1f-8c50-a4242f351376.jpg">
+            </div>
+            <h2 style="color: var(--dark-pink);">ถึง... บัวขวัญ</h2>
+            <p style="color: #666; font-size: 0.95rem; line-height: 1.6;">ขอบคุณพี่ที่เสร่อในวันนั้น เลยทำให้ได้คุยกับน้องในวันนี้~~~ ชอบดอกไม้มั้ยกะไม่รู้น้า แต่ซื้อไปแล้วว ไม่ได้ไปกินชาบูกะไม่เป็นไรหรอกก แม่พี่รอกินทุเรียนอยู่นะ(อันนี้จริงจัง) ถุงร้อนที่ซื้อให้ก็ไม่อยากให้ใช้หรอกเพราะว่าถ้าใช้แปลว่าน้องปวดท้อง สกุชชี่เห็นบ่นอยากได้พี่กะนึกว่าซื้อแล้ว แต่ยังไม่ซื้อกะเลยสั่งให้แล้ว ส่วนสไลม์เดะดูให้แต่หมุนก่อน559459858 แล้วก็ไม่อยากรีบเท่าไหร่ แต่ก็คิดว่าน่าจะเกินพี่น้องไปนานแล้ว แต่พี่กะยังไม่ได้บอกสักที วันนี้เลยคิดว่าน่าจะถึงเวลาและ<br>ลองกดอ่านต่อสิ</p>
+            <button onclick="goToQuestion()">อ่านต่อ 💌</button>
+        </div>
+
+        <div class="container" id="questionSection">
+            <div class="gif-container">
+                <img src="https://i.ibb.co/vWkdvF8/aad36fac-78fd-4e1f-8c50-a4242f351376.jpg">
+            </div>
+            <h1 style="color: var(--dark-pink); font-size: 1.5rem;">เป็นแฟนกับพี่มั้ย?</h1>
+             <p style="color: #666;">(ลองกดไม่เอาหรอกดู อันนี้ทำตั้งนาน)</p>
+            <div class="btn-group">
+                <button id="yesBtn">ตกลง</button>
+                <button id="noBtn" class="btn-secondary">ไม่เอาหรอก</button>
+            </div>
+        </div>
+
+        <div class="container" id="successSection">
+            <div class="gif-container">
+                <img src="https://i.ibb.co/WWqKCnDw/84d890c3-cfcd-4a67-aeef-c579ef3441c6.jpg">
+            </div>
+            <h1 style="color: var(--dark-pink);">เย้! มีแฟนแล้วนะยัยเด็กน้อย</h1>
+            <p>ขอบคุณน้าาที่เข้ามาในชีวิตฉานน<br>อยู่เป็นหมาเด็กของฉานไปนานๆนะ</p>
+            <p style="font-size: 0.8rem; color: #aaa;">วันครบรอบ: <span id="date"></span></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        const envelopeSection = document.getElementById('envelopeSection');
+        const letterSection = document.getElementById('letterSection');
+        const questionSection = document.getElementById('questionSection');
+        const successSection = document.getElementById('successSection');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const bgMusic = document.getElementById('bgMusic');
+
+        // ฟังก์ชันเริ่มเล่นเพลงแบบบังคับ (Hard Play)
+        function startMusic() {
+            // ปลุกระบบเสียง AudioContext (สำหรับ iOS/Android)
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            if (context.state === 'suspended') {
+                context.resume();
+            }
+
+            // สั่งเล่นเพลงทันที
+            const playPromise = bgMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log("Music is playing!");
+                }).catch(error => {
+                    // ถ้ายังไม่เล่น ให้บังคับโหลดใหม่และลองอีกรอบใน 100ms
+                    console.log("Retry playing...");
+                    bgMusic.load();
+                    setTimeout(() => bgMusic.play(), 100);
+                });
+            }
+        }
+
+        // 1. กดเปิดซอง
+        envelopeSection.addEventListener('click', () => {
+            startMusic(); // เรียกใช้ฟังก์ชันเล่นเพลงทันทีที่จิ้ม
+            
+            envelopeSection.classList.add('open');
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            
+            // เริ่มปล่อยรูปลอย
+            setInterval(spawnFloatingPic, 400);
+            
+            setTimeout(() => {
+                envelopeSection.style.display = 'none';
+                letterSection.classList.add('active');
+            }, 1000);
+        });
+
+        const noTexts = [
+            "ไม่เอาหรอก", "ไม่จริงหรอ? 🥺", "คิดดีๆ นะ...", "พี่เสียใจนะเนี่ย", 
+            "ใจร้ายจังเลย", "ยอมเถอะน้าาา", "นักวิจัยบอกว่า!", "นิ้วเบียดแน่ๆ"
+        ];
+
+        let noCount = 0;
+        let yesScale = 1;
+        let noScale = 1;
+
+        function spawnFloatingPic() {
+            const floatingImages = [
+                'https://i.ibb.co/w2QxhxM/2a3b354e-4147-441e-a982-0b62080c3253.jpg',
+                'https://i.ibb.co/FbXC1c4R/b16dd005-1a2c-4ae5-89e8-710d13121466.jpg',
+                'https://i.ibb.co/67GB043h/fec0f246-8ae4-4711-82f4-ffa88937ca0c.jpg',
+                'https://i.ibb.co/hRNxfvB0/75018af4-5aff-46f1-9176-1b37db4dac40.jpg',
+                'https://cdn-icons-png.flaticon.com/512/833/833472.png'
+            ];
+            const img = document.createElement('img');
+            img.src = floatingImages[Math.floor(Math.random() * floatingImages.length)];
+            img.className = 'floating-pic';
+            const speed = Math.random() * 4 + 8;
+            img.style.left = Math.random() * 100 + 'vw';
+            img.style.width = (Math.random() * 40 + 25) + 'px';
+            img.style.setProperty('--speed', speed + 's');
+            img.style.setProperty('--sway-speed', (Math.random() * 2 + 2) + 's');
+            img.style.setProperty('--max-op', Math.random() * 0.5 + 0.4);
+            img.style.setProperty('--sway-left', '-30px');
+            img.style.setProperty('--sway-right', '30px');
+            document.body.appendChild(img);
+            setTimeout(() => img.remove(), speed * 1000);
+        }
+
+        function goToQuestion() {
+            letterSection.classList.remove('active');
+            setTimeout(() => {
+                letterSection.style.display = 'none';
+                questionSection.classList.add('active');
+            }, 400);
+        }
+
+        noBtn.addEventListener('click', () => {
+            noCount++;
+            noBtn.innerText = noTexts[noCount % noTexts.length];
+            yesScale += 0.3;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            yesBtn.style.zIndex = "100";
+            noScale -= 0.1;
+            if (noScale < 0.5) noScale = 0.5;
+            noBtn.style.transform = `scale(${noScale})`;
+            
+            if(yesScale > 3) {
+                yesBtn.style.position = "fixed";
+                yesBtn.style.top = "50%";
+                yesBtn.style.left = "50%";
+                yesBtn.style.translate = "-50% -50%";
+            }
+        });
+
+        yesBtn.addEventListener('click', () => {
+            questionSection.classList.remove('active');
+            setTimeout(() => {
+                questionSection.style.display = 'none';
+                successSection.classList.add('active');
+                document.getElementById('date').innerText = new Date().toLocaleDateString('th-TH');
+                confetti({ particleCount: 250, spread: 100, colors: ['#ff4d6d', '#ff0000', '#ffe066'] });
+            }, 400);
+        });
+    </script>
+</body>
+</html>
